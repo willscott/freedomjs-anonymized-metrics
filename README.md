@@ -48,7 +48,23 @@ conditions, but the definition does need to be provided in the lifetime of the
 module or reports will not be saved - since storage will only record statistics
 and not raw reported values.
 
-The defintion of a metric follows the following format:
+The defintion of metrics follow the following format:
+
+```javascript
+"country": {
+  "type": "enum",
+  "values": ["us","mx","ca","zh","gb","it",...]
+},
+"bandwidth": {
+  "type": "range",
+  "min": 0,
+  "max": 1000000000
+},
+"connections": {
+  "type": "count",
+  "perweek": "10"
+}
+```
 
 ## Development
 
