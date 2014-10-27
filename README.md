@@ -62,7 +62,7 @@ The defintion of metrics follow the following format:
 },
 "connections": {
   "type": "count",
-  "perweek": "10"
+  "perweek": 10
 }
 ```
 

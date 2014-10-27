@@ -1,0 +1,30 @@
+{
+  "name": "Anonymous Metrics",
+  "description": "Module for aggregating usage metrics to maintain safety",
+  "app": {
+    "script": "metric.js",
+  },
+  "permissions": "",
+  "provides": ["metrics"],
+  "default": "metrics",
+  "constraints": {
+    "isolation": "app"
+  },
+  "api": {
+    "metrics": {
+      "constructor": {
+        "value": "object"
+      },
+      "report": {
+        "type": "method",
+        "value": ["string", "object"],
+        "ret": {}
+      },
+      "retrieve": {
+        "type": "method",
+        "value": [],
+        "ret": "string"
+      }
+    }
+  }
+}
