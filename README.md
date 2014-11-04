@@ -3,6 +3,8 @@ freedom.js Anonymized Metrics
 
 freedom.js module for anonymized metric collection.
 
+This module encapuslates the logic presented in [RAPPOR](http://research.google.com/pubs/pub42852.html), a technique for randomize aggregatable privacy-preserving Ordinal responses.
+
 ## Usage
 
 1. Add ```anonmetrics.json``` as a dependency of your module, using the
