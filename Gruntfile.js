@@ -24,6 +24,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-browserify');
 
+  grunt.registerTask('build', ['browserify']);
   grunt.registerTask('test', ['jshint']);
   grunt.registerTask('default', ['build', 'test']);
 };
