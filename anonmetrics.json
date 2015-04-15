@@ -4,7 +4,7 @@
   "app": {
     "script": "metric.js",
   },
-  "permissions": "",
+  "permissions": "core.storage",
   "provides": ["metrics"],
   "default": "metrics",
   "constraints": {
