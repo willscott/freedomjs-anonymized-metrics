@@ -24,6 +24,11 @@
         "type": "method",
         "value": [],
         "ret": "string"
+      },
+      "counters": {
+        "type": "method",
+        "value": [],
+        "ret": "object"
       }
     }
   }
