@@ -25,7 +25,7 @@
         "value": [],
         "ret": "string"
       },
-      "counters": {
+      "retrieveUnsafe": {
         "type": "method",
         "value": [],
         "ret": "object"

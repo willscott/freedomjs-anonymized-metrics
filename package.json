@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/willscott/freedomjs-anonymized-metrics",
   "dependencies": {
-    "rappor": "0.0.3"
+    "rappor": "0.0.4"
   },
   "devDependencies": {
     "freedom": "^0.6.22",

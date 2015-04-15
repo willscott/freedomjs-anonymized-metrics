@@ -29,7 +29,7 @@ with this definition. The definition format is described in the
 
 4. Report a metric values at appropriate points.
     ```javascript
-    metrics.report('sessionStart');
+    metrics.report('successes', 1);
     metrics.report('bandwidth', observedBandwidth);
     ````
 
@@ -54,19 +54,21 @@ The defintion of metrics follow the following format:
 
 ```javascript
 "country": {
-  "type": "enum",
-  "values": ["us","mx","ca","zh","gb","it",...]
-},
-"bandwidth": {
-  "type": "range",
-  "min": 0,
-  "max": 1000000000
+  "type": "string",
 },
 "connections": {
-  "type": "count",
-  "magnitude": 10
+  "type": "logarithmic",
+  "base": 10
 }
 ```
+
+## Encoding Strategies
+
+### Logarithmic
+Appropriate for positive integer values where the order of magnitude is interesting.
+
+### String
+Appropriate for arbitrary strings, where relative frequencies of known exact values can be compared.
 
 ## Development
 
