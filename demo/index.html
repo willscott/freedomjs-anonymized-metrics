@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang='en-US'>
+  <head>
+    <title>Anonymized Metrics ~ freedom.js Demo</title>
+    <meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+    <script type='text/javascript' src='../node_modules/freedom/freedom.js'></script>
+    <script type='text/javascript' src='page.js'></script>
+    <link href='../node_modules/freedom/demo/style.css' rel='stylesheet' type='text/css' />
+    <style type='text/css'>
+    section {border: 1px solid black; position: relative; display: inline-block; vertical-align: top;}
+    input[type=range][orient=vertical] {writing-mode: bt-lr; -webkit-appearance: slider-vertical; width: 8px; height: 175px; padding: 0 5px;}
+    section h3 {margin: auto; padding-left: 50px;}
+    </style>
+  </head>
+  <body>
+    <header id='logo'>freedom.js</header>
+    <header><span class='triangle'>&#9654;</span> Demos</header>
+    <header><span class='triangle'>&#9654;</span> Anonymized Metrics</header>
+    <div style='clear:both; height;15px;'></div>
+    <section>
+      <h3>Report</h3>
+      <label for='height'>Measurement:</label>
+      <input type='range' orient='vertical' id='height' name='height' value=0 />
+      <span id='height-value'>0</span>
+      <input type='button' id='report' name='report' value='Report' />
+    </section>
+    <section>
+      <h3>Retrieve</h3>
+      <input type='button' id='retrieve' name='retrieve' value='Retrieve' />
+      <pre id='log'></pre>
+    </section>
+  </body>
+</html>

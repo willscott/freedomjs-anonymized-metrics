@@ -1,10 +1,8 @@
 {
   "name": "Anonymous Metrics",
   "description": "Module for aggregating usage metrics to maintain safety",
-  "app": {
-    "script": "metric.js",
-  },
-  "permissions": "core.storage",
+  "app": {"script": "metric.js"},
+  "permissions": ["core.storage"],
   "provides": ["metrics"],
   "default": "metrics",
   "constraints": {
