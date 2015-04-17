@@ -10,13 +10,17 @@ var reports;
 var Metrics = function (dispatchEvent, definition) {
   this.definition = definition.definition;
   this.name = definition.name;
+  this.rappors = {};
 
   storage.get('metrics-id').then(function (id) {
     if (!id) {
       id = util.getId();
       storage.set('metrics-id', id);
     }
-    this.rappor = new rappor.Encoder(id);
+    var keys = Object.keys(this.definition);
+    for (var key in keys) {
+      this.rappors[key] = new rappor.Encoder(id, this.definition[key]);
+    }
   }.bind(this));
 
   if (!reports[this.name]) {
@@ -44,30 +48,38 @@ Metrics.prototype.report = function (metric, value) {
 };
 
 Metrics.prototype.retrieve = function () {
-  var words = [];
+  var output = {};
 
   for (var report in reports) {
     var keys = Object.keys(reports[report]);
     for (var key in this.definition) {
       if (this.definition[key].type === "logarithmic") {
-        var m = 0, mag = this.definition[key].base;
-        while (reports[report][key] > 0) {
-          words.push(key + m);
-          m += 1;
-          reports[report][key] = Math.floor(reports[report][key]/mag);
-        }
+        // for metric 'success', base 2, this would encode the keys:
+        // success1, success2, success4, success8, success16.
+        var mag = this.definition[key].base,
+            rounded = Math.pow(mag,
+              Math.floor(Math.log(reports[report][key])/Math.log(mag)));
+        output[key] = this.rappors[key].encode(reports[report][key] + rounded);
       } else if (this.definition[key].type === "string") {
-        words.push(key + reports[report][key]);
+        output[key] = this.rappors[key].encode(reports[report][key]);
       }
     }
   }
 
-  var output = this.rappor.encodeMultiple(words);
-  return Promise.resolve(output.toString());
+  return Promise.resolve(output);
 };
 
 Metrics.prototype.retrieveUnsafe = function () {
-  return Promise.resolve(reports);
+  var output = {};
+
+  for (var report in reports) {
+    var keys = Object.keys(reports[report]);
+    for (var key in this.definition) {
+      output[key] = reports[report][key];
+    }
+  }
+
+  return Promise.resolve(output);
 };
 
 if (typeof freedom !== 'undefined') {

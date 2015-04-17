@@ -23,7 +23,7 @@
       "retrieve": {
         "type": "method",
         "value": [],
-        "ret": "string"
+        "ret": "object"
       },
       "retrieveUnsafe": {
         "type": "method",
