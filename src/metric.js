@@ -12,7 +12,11 @@ var reports = {},
 var Metrics = function (dispatchEvent, definition) {
   this.name = definition.name;
   definitions[this.name] = definition.definition;
-  this.rappors = {};
+
+  if (!reports[this.name]) {
+    reports[this.name] = {};
+    rappors[this.name] = {};
+  }
 
   storage.get('metrics-id').then(function (id) {
     if (!id) {
@@ -21,14 +25,9 @@ var Metrics = function (dispatchEvent, definition) {
     }
     var keys = Object.keys(definition.definition);
     keys.forEach(function (key) {
-      this.rappors[key] = new rappor.Encoder(id, definition.definition[key]);
+      rappors[this.name][key] = new rappor.Encoder(id, definition.definition[key]);
     }.bind(this));
   }.bind(this));
-
-  if (!reports[this.name]) {
-    reports[this.name] = {};
-    rappors[this.name] = {};
-  }
 };
 
 Metrics.prototype.report = function (metric, value) {
@@ -39,32 +38,30 @@ Metrics.prototype.report = function (metric, value) {
     });
   }
 
-  if (definitions[this.name][metric].type === "logarithmic") {
-    reports[this.name][metric] = value;
-
-    // for metric 'success', base 2, this would encode the keys:
-    // success1, success2, success4, success8, success16.
-    var mag = definitions[this.name][metric].base,
-        rounded = Math.pow(mag, Math.floor(Math.log(value)/Math.log(mag)));
-    rappors[this.name][metric] = this.rappors[metric].encode(metric + rounded).toString();
-  } else if (definitions[this.name][metric].type === "string") {
-    reports[this.name][metric] = value;
-
-    rappors[this.name][metric] = this.rappors[metric].encode(metric + value).toString();
-  }
+  reports[this.name][metric] = value;
 
   return Promise.resolve();
 };
 
 Metrics.prototype.retrieve = function () {
-  var output = {};
+  var output = {},
+      addReport = function (metric) {
+        var value = reports[report][metric];
+        if (definitions[report][metric].type === "logarithmic") {
+          // for metric 'success', base 2, this would encode the keys:
+          // success1, success2, success4, success8, success16.
+          var mag = definitions[report][metric].base,
+              rounded = Math.pow(mag, Math.floor(Math.log(value)/Math.log(mag)));
+          output[metric] = rappors[report][metric].encode(metric + rounded).value;
+        } else if (definitions[this.name][metric].type === "string") {
+          output[metric] = this.rappors[report][metric].encode(metric + value).value;
+        }
+      }.bind(this);
 
   try {
     for (var report in reports) {
       var keys = Object.keys(reports[report]);
-      keys.forEach(function (metric) {
-        output[metric] = rappors[report][metric];
-      }.bind(this));
+      keys.forEach(addReport);
     }
   } catch (e) {
     console.error(e);
@@ -75,13 +72,14 @@ Metrics.prototype.retrieve = function () {
 };
 
 Metrics.prototype.retrieveUnsafe = function () {
-  var output = {};
+  var output = {},
+      addReport = function (metric) {
+        output[metric] = reports[report][metric];
+      };
 
   for (var report in reports) {
     var keys = Object.keys(reports[report]);
-    keys.forEach(function (metric) {
-      output[metric] = reports[report][metric];
-    });
+    keys.forEach(addReport);
   }
 
   return Promise.resolve(output);
