@@ -1,6 +1,6 @@
 {
   "name": "freedomjs-anonymized-metrics",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Privacy Preserving metrics reporting, using the rappor algorithm",
   "main": "metric.js",
   "scripts": {
@@ -16,13 +16,11 @@
     "url": "https://github.com/willscott/freedomjs-anonymized-metrics/issues"
   },
   "homepage": "https://github.com/willscott/freedomjs-anonymized-metrics",
-  "dependencies": {
-    "rappor": "0.0.4"
-  },
   "devDependencies": {
     "freedom": "^0.6.22",
     "grunt": "^0.4.5",
     "grunt-browserify": "^3.7.0",
-    "grunt-contrib-jshint": "^0.11.1"
+    "grunt-contrib-jshint": "^0.11.1",
+    "rappor": "0.0.7"
   }
 }
