@@ -1,6 +1,6 @@
 {
   "name": "freedomjs-anonymized-metrics",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Privacy Preserving metrics reporting, using the rappor algorithm",
   "main": "metric.js",
   "scripts": {
