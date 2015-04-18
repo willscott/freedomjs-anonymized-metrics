@@ -7,7 +7,8 @@ var storage = freedom['core.storage']();
 
 var reports = {},
     definitions = {},
-    rappors = {};
+    rappors = {},
+    rapporState;
 
 var Metrics = function (dispatchEvent, definition) {
   this.name = definition.name;
@@ -18,14 +19,22 @@ var Metrics = function (dispatchEvent, definition) {
     rappors[this.name] = {};
   }
 
-  storage.get('metrics-id').then(function (id) {
+  storage.get('metrics-rapporstate').then(function (state) {
+    if (state && !rapporState) {
+      rapporState = JSON.parse(state);
+    } else {
+      rapporState = {};
+    }
+    return storage.get('metrics-id');
+  }.bind(this)).then(function (id) {
     if (!id) {
       id = util.getId();
       storage.set('metrics-id', id);
     }
     var keys = Object.keys(definition.definition);
     keys.forEach(function (key) {
-      rappors[this.name][key] = new rappor.Encoder(id, definition.definition[key]);
+      rappors[this.name][key] = new rappor.Encoder(id, definition.definition[key],
+        new rappor.MemoizedRandomFunctions(definition.definition[key], rapporState));
     }.bind(this));
   }.bind(this));
 };
@@ -57,12 +66,12 @@ Metrics.prototype.retrieve = function () {
           output[metric] = this.rappors[report][metric].encode(metric + value).value;
         }
       }.bind(this);
-
   try {
     for (var report in reports) {
       var keys = Object.keys(reports[report]);
       keys.forEach(addReport);
     }
+    storage.set('metrics-rapporstate', JSON.stringify(rapporState));
   } catch (e) {
     console.error(e);
     return Promise.reject(e.message);

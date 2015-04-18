@@ -11,7 +11,8 @@ function start(MetricsClient) {
         num_cohorts: 64,
         prob_p: 0.5,
         prob_q: 0.75,
-        prob_f: 0.5
+        prob_f: 0.5,
+        flag_oneprr: true
       }
     }
   });

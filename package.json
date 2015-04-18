@@ -21,6 +21,6 @@
     "grunt": "^0.4.5",
     "grunt-browserify": "^3.7.0",
     "grunt-contrib-jshint": "^0.11.1",
-    "rappor": "0.0.7"
+    "rappor": "^0.1.0"
   }
 }
