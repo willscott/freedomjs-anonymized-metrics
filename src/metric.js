@@ -8,9 +8,11 @@ var storage = freedom['core.storage']();
 var reports = {},
     definitions = {},
     rappors = {},
-    rapporState;
+    rapporState,
+    rapporId;
 
 var Metrics = function (dispatchEvent, definition) {
+  this.ready = false;
   this.name = definition.name;
   definitions[this.name] = definition.definition;
 
@@ -19,23 +21,28 @@ var Metrics = function (dispatchEvent, definition) {
     rappors[this.name] = {};
   }
 
-  storage.get('metrics-rapporstate').then(function (state) {
+  this.loadPromise = storage.get('metrics-rapporstate').then(function (state) {
     if (state && !rapporState) {
       rapporState = JSON.parse(state);
     } else {
       rapporState = {};
     }
-    return storage.get('metrics-id');
+    if (!rapporId) {
+      return storage.get('metrics-id');
+    } else {
+      return rapporId;
+    }
   }.bind(this)).then(function (id) {
     if (!id) {
-      id = util.getId();
-      storage.set('metrics-id', id);
+      rapporId = util.getId();
+      storage.set('metrics-id', rapporId);
     }
     var keys = Object.keys(definition.definition);
     keys.forEach(function (key) {
-      rappors[this.name][key] = new rappor.Encoder(id, definition.definition[key],
+      rappors[this.name][key] = new rappor.Encoder(rapporId, definition.definition[key],
         new rappor.MemoizedRandomFunctions(definition.definition[key], rapporState));
     }.bind(this));
+    this.ready = true;
   }.bind(this));
 };
 
@@ -53,6 +60,10 @@ Metrics.prototype.report = function (metric, value) {
 };
 
 Metrics.prototype.retrieve = function () {
+  if (!this.ready) {
+    return this.loadPromise.then(retrieve);
+  }
+
   var output = {},
       addReport = function (metric) {
         var value = reports[report][metric];
@@ -63,7 +74,7 @@ Metrics.prototype.retrieve = function () {
               rounded = Math.pow(mag, Math.floor(Math.log(value)/Math.log(mag)));
           output[metric] = rappors[report][metric].encode(metric + rounded).value;
         } else if (definitions[this.name][metric].type === "string") {
-          output[metric] = this.rappors[report][metric].encode(metric + value).value;
+          output[metric] = rappors[report][metric].encode(metric + value).value;
         }
       }.bind(this);
   try {
