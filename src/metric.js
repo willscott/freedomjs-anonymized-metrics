@@ -61,7 +61,7 @@ Metrics.prototype.report = function (metric, value) {
 
 Metrics.prototype.retrieve = function () {
   if (!this.ready) {
-    return this.loadPromise.then(retrieve);
+    return this.loadPromise.then(this.retrieve.bind(this));
   }
 
   var output = {},
