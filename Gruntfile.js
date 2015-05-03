@@ -12,8 +12,9 @@ module.exports = function (grunt) {
       },
       options: {
         browserifyOptions: {
-          debug: true
-        }
+          debug: true,
+        },
+        require: ['./src/crypto:crypto']
       }
     },
     jshint: {

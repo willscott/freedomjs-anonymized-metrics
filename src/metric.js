@@ -2,6 +2,7 @@
 /*globals freedom,Promise */
 
 var rappor = require('rappor');
+var crypt = require('crypto');
 var util = require('freedom/src/util');
 var storage = freedom['core.storage']();
 
@@ -10,6 +11,18 @@ var reports = {},
     rappors = {},
     rapporState,
     rapporId;
+
+var getRandomness = function (callback) {
+  var bloombits = 0;
+  for (var i in definitions) {
+    if (definitions.hasOwnProperty(i)) {
+      bloombits += definition[i].num_bloombits || rappor.Params.num_bloombits;
+    }
+  }
+  return new Promise(function (resolve) {
+    crypt.refreshBuffer(4 * bloombits + Object.keys(definitions).length, resolve);
+  });
+};
 
 var Metrics = function (dispatchEvent, definition) {
   this.ready = false;
@@ -60,8 +73,12 @@ Metrics.prototype.report = function (metric, value) {
 };
 
 Metrics.prototype.retrieve = function () {
+  return getRandomness().then(this.actualRetrieve.bind(this));
+}
+
+Metrics.prototype.actualRetrieve = function () {
   if (!this.ready) {
-    return this.loadPromise.then(this.retrieve.bind(this));
+    return this.loadPromise.then(this.actualRetrieve.bind(this));
   }
 
   var output = {},
