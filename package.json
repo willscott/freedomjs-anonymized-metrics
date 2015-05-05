@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/willscott/freedomjs-anonymized-metrics",
   "devDependencies": {
-    "freedom": "^0.6.22",
+    "freedom": "^0.6.24",
     "grunt": "^0.4.5",
     "grunt-browserify": "^3.7.0",
     "grunt-contrib-jshint": "^0.11.1",
