@@ -13,6 +13,7 @@ var fcrypto = freedom['core.crypto']();
 exports.refreshBuffer = function (size, callback) {
   if (typeof crypto !== 'undefined') {
     buf = new Uint8Array(size);
+    offset = 0;
     crypto.getRandomValues(buf);
     callback(0);
     return;
