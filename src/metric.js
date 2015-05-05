@@ -16,11 +16,12 @@ var getRandomness = function (callback) {
   var bloombits = 0;
   for (var i in definitions) {
     if (definitions.hasOwnProperty(i)) {
-      bloombits += definition[i].num_bloombits || rappor.Params.num_bloombits;
+      bloombits += definitions[i].num_bloombits || rappor.Params.num_bloombits;
     }
   }
   return new Promise(function (resolve) {
-    crypt.refreshBuffer(4 * bloombits + Object.keys(definitions).length, resolve);
+    console.log('asking to reload to ', 4*bloombits);
+    crypt.refreshBuffer(4 * 8 * bloombits + Object.keys(definitions).length, resolve);
   });
 };
 
@@ -74,7 +75,7 @@ Metrics.prototype.report = function (metric, value) {
 
 Metrics.prototype.retrieve = function () {
   return getRandomness().then(this.actualRetrieve.bind(this));
-}
+};
 
 Metrics.prototype.actualRetrieve = function () {
   if (!this.ready) {

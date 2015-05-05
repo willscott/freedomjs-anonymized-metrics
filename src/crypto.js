@@ -33,7 +33,10 @@ exports.refreshBuffer = function (size, callback) {
  * crypto.getRandomValues
  */
 exports.getRandomValues = function (buffer) {
-  var size = buffer.length,
+  if (buffer.buffer) {
+    buffer = buffer.buffer;
+  }
+  var size = buffer.byteLength,
     view = new Uint8Array(buffer),
     i;
 
