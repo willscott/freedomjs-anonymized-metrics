@@ -88,11 +88,16 @@ Metrics.prototype.actualRetrieve = function () {
         if (definitions[report][metric].type === "logarithmic") {
           // for metric 'success', base 2, this would encode the keys:
           // success1, success2, success4, success8, success16.
+          if (!definitions[report][metric].base) {
+            throw new Error("Logarihmic metrics must define a base for encoding.");
+          }
           var mag = definitions[report][metric].base,
               rounded = Math.pow(mag, Math.floor(Math.log(value)/Math.log(mag)));
-          output[metric] = rappors[report][metric].encode(metric + rounded).value;
+          output[metric] = rappors[report][metric].encode(String(metric) + rounded).value;
         } else if (definitions[this.name][metric].type === "string") {
           output[metric] = rappors[report][metric].encode(metric + value).value;
+        } else {
+          throw new Error("Unknown Metric Type for " + metric + ": " + definitions[this.name][metric].type);
         }
       }.bind(this);
   try {
