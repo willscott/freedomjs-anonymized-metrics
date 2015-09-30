@@ -19,7 +19,7 @@ exports.refreshBuffer = function (size, callback) {
     return;
   }
 
-  fcrypto.getRandomvalues(size).then(function (b) {
+  fcrypto.getRandomBytes(size).then(function (b) {
     buf = new Uint8Array(b);
     offset = 0;
     callback(0);
