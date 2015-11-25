@@ -20,8 +20,8 @@ var getRandomness = function (callback) {
     }
   }
   return new Promise(function (resolve) {
-    console.log('asking to reload to ', 4*bloombits);
-    crypt.refreshBuffer(4 * 8 * bloombits + Object.keys(definitions).length, resolve);
+    console.log('asking to reload to ', 8*bloombits);
+    crypt.refreshBuffer(8 * 8 * bloombits + Object.keys(definitions).length, resolve);
   });
 };
 
