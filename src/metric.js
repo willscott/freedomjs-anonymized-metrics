@@ -16,11 +16,15 @@ var getRandomness = function (callback) {
   var bloombits = 0;
   for (var i in definitions) {
     if (definitions.hasOwnProperty(i)) {
-      bloombits += definitions[i].num_bloombits || rappor.Params.num_bloombits;
+        for (var j in definitions[i]) {
+            if (definitions[i].hasOwnProperty(j)) {
+                bloombits += definitions[i][j].num_bloombits || rappor.Params.num_bloombits;
+            }
+        }
     }
   }
   return new Promise(function (resolve) {
-    console.log('asking to reload to ', 8*bloombits);
+    console.log('asking to reload to ', 8 * 8 * bloombits + Object.keys(definitions).length);
     crypt.refreshBuffer(8 * 8 * bloombits + Object.keys(definitions).length, resolve);
   });
 };
