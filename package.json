@@ -1,6 +1,6 @@
 {
   "name": "freedomjs-anonymized-metrics",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Privacy Preserving metrics reporting, using the rappor algorithm",
   "main": "metric.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "url": "git://github.com/willscott/freedomjs-anonymized-metrics.git"
   },
   "author": "Will Scott <willscott@gmail.com> (https://wills.co.tt)",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/willscott/freedomjs-anonymized-metrics/issues"
   },
