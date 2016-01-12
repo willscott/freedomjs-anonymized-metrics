@@ -40,12 +40,10 @@ exports.getRandomValues = function (buffer) {
     view = new Uint8Array(buffer),
     i;
 
-  if (offset + size > buf.length) {
-    throw new Error("Insufficient Randomness Allocated.");
-  }
-
+  // Hack: just wrap around.
   for (i = 0; i < size; i += 1) {
-    view[i] = buf[offset + i];
+    view[i] = buf[(offset + i) % buf.length];
   }
   offset += size;
+  offset = offset % buf.length;
 };
