@@ -7,7 +7,7 @@ module.exports = function (grunt) {
     browserify: {
       metrics: {
         files: {
-          'metric.js': ['src/metric.js']
+          'dist/metric.js': ['src/metric.js']
         }
       },
       options: {
@@ -17,6 +17,12 @@ module.exports = function (grunt) {
         require: ['./src/crypto:crypto']
       }
     },
+    copy: {
+      dist: {
+        src: 'anonmetrics.json',
+        dest: 'dist/'
+      }
+    },
     jshint: {
       all: ['src/*.js']
     }
@@ -24,8 +30,9 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
-  grunt.registerTask('build', ['browserify']);
+  grunt.registerTask('build', ['browserify', 'copy:dist']);
   grunt.registerTask('test', ['jshint']);
   grunt.registerTask('default', ['build', 'test']);
 };
