@@ -14,18 +14,20 @@ var reports = {},
 
 var getRandomness = function (callback) {
   var bloombits = 0;
+  var num_definitions = 0;
   for (var i in definitions) {
     if (definitions.hasOwnProperty(i)) {
         for (var j in definitions[i]) {
             if (definitions[i].hasOwnProperty(j)) {
+                num_definitions++;
                 bloombits += definitions[i][j].num_bloombits || rappor.Params.num_bloombits;
             }
         }
     }
   }
   return new Promise(function (resolve) {
-    console.log('asking to reload to ', 8 * 8 * bloombits + Object.keys(definitions).length);
-    crypt.refreshBuffer(8 * 8 * bloombits + Object.keys(definitions).length, resolve);
+    console.log('asking to reload to ', 8 * 8 * bloombits + num_definitions);
+    crypt.refreshBuffer(8 * 8 * bloombits + num_definitions, resolve);
   });
 };
 
@@ -78,7 +80,7 @@ Metrics.prototype.report = function (metric, value) {
 };
 
 Metrics.prototype.retrieve = function () {
-  return getRandomness().then(this.actualRetrieve.bind(this));
+  return getRandomness().then(this.actualRetrieve.bind(this), function(err) { console.log("Failed getRandomness: ", err); });
 };
 
 Metrics.prototype.actualRetrieve = function () {
