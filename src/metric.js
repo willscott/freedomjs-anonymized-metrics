@@ -25,9 +25,9 @@ var getRandomness = function (callback) {
         }
     }
   }
-  return new Promise(function (resolve, reject) {
+  return new Promise(function (resolve) {
     console.log('asking to reload to ', 8 * 8 * bloombits + num_definitions);
-    crypt.refreshBuffer(8 * 8 * bloombits + num_definitions, resolve, reject);
+    crypt.refreshBuffer(8 * 8 * bloombits + num_definitions, resolve);
   });
 };
 
