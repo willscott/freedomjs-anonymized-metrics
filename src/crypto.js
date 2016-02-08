@@ -42,9 +42,8 @@ exports.refreshBuffer = function (size, callback) {
 
   // Fill each chunk individually, into subarrays of buf.
   if (typeof crypto !== 'undefined') {
-    offset = 0;
     buf = new Uint8Array(size);
-    var cur_buf;
+    offset = 0;
     for (var i = 0; i < num_blocks+1; i++) {
       crypto.getRandomValues(buf.subarray(kMaxSingleBuffer * i,
                                           Math.min(kMaxSingleBuffer * (i+1), size)));
