@@ -12,7 +12,24 @@ var reports = {},
     rapporState,
     rapporId;
 
+var logMessages = [];
+
+function clearLogs() {
+  logMessages = [];
+}
+
+function logMessage(str) {
+  logMessages.push(str);
+}
+
+function getLogs() {
+  var ret = '  ' + logMessages.join('\n  ');
+  clearLogs();
+  return ret;
+}
+
 var getRandomness = function (callback) {
+  logMessage("getRandomness: Starting with: " + JSON.stringify(definitions));
   var bloombits = 0;
   var num_definitions = 0;
   for (var i in definitions) {
@@ -25,9 +42,17 @@ var getRandomness = function (callback) {
         }
     }
   }
-  return new Promise(function (resolve) {
-    console.log('asking to reload to ', 8 * 8 * bloombits + num_definitions);
-    crypt.refreshBuffer(8 * 8 * bloombits + num_definitions, resolve);
+  var num_desired_rand_bytes = 8 * 8 * bloombits * num_definitions;
+  logMessage("getRandomness: total bloombits=" + bloombits + ", with " + num_definitions +
+      " definitions.  So that should be "+ num_desired_rand_bytes);
+  return new Promise(function (resolve, reject) {
+    logMessage('asking to reload to ' + num_desired_rand_bytes);
+    crypt.refreshBuffer(num_desired_rand_bytes, function(code, err) {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject([err, getLogs()]);
+      }});
   });
 };
 
@@ -80,7 +105,10 @@ Metrics.prototype.report = function (metric, value) {
 };
 
 Metrics.prototype.retrieve = function () {
-  return getRandomness().then(this.actualRetrieve.bind(this), function(err) { console.log("Failed getRandomness: ", err); });
+  clearLogs();
+  logMessage("Metrics.retrieve()");
+  return getRandomness().then(this.actualRetrieve.bind(this),
+                              function(err) { logMessage("Failed getRandomness: ", err); });
 };
 
 Metrics.prototype.actualRetrieve = function () {
