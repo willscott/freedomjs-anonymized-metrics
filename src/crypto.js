@@ -7,24 +7,40 @@ var buf, offset = 0;
 var fcrypto = freedom['core.crypto']();
 // https://developer.mozilla.org/en-US/docs/Web/API/RandomSource/getRandomValues
 var kMaxSingleBuffer = 65536;
+var logMessages = [];
+
+function logMessage(str) {
+  logMessages.push(str);
+}
+
+function getLogs() {
+  var ret = '  ' + logMessages.join('\n  ');
+  logMessages = [];
+  return ret;
+}
+
 
 function getRandomByteChunks(callback, buffers, size, index) {
   // last chunk.
+  logMessage("getRandomByteChunks: size="+size+", index="+index);
   if ((index+1) * kMaxSingleBuffer > size) {
     fcrypto.getRandomBytes(size - (index * kMaxSingleBuffer)).then(function (b) {
       buffers.push(new Uint8Array(b));
       buf = new Uint8Array(size);
+      logMessage("getRandomByteChunks: size="+size+", buf is new array of byteLength " + buf.byteLength + ", length " + buf.length);
       for (var i = 0; i < buffers.length; i++) {
         buf.set(buffers[i], i * kMaxSingleBuffer);
       }
       callback(0);
     }, function(err) {
+      logMessage("getRandomByteChunks: got ane error " + err);
       callback(-1, err);
     });
   } else {
    // every chunk before the last chunk.
     fcrypto.getRandomBytes(kMaxSingleBuffer).then(function(b) {
       buffers.push(new Uint8Array(b));
+      logMessage("getRandomByteChunks: got b, a new array of byteLength " + b.byteLength + ", length " + b.length);
       getRandomByteChunks(callback, buffers, size, index+1);
     }, function(err) {
       callback(-1, err);
@@ -37,11 +53,13 @@ function getRandomByteChunks(callback, buffers, size, index) {
  * callback is called when buffer is refreshed.
  */
 exports.refreshBuffer = function (size, callback) {
+  logMessage("crypt.refreshBuffer: refreshing for " + size + " bytes.");
   // Split up the request into kMaxSingleBuffer-size chunks.
   var num_blocks = Math.floor(size / kMaxSingleBuffer);
 
   // Fill each chunk individually, into subarrays of buf.
   if (typeof crypto !== 'undefined') {
+    logMessage("crypt.refreshBuffer: Using built-in crypto.");
     buf = new Uint8Array(size);
     offset = 0;
     for (var i = 0; i < num_blocks+1; i++) {
@@ -56,6 +74,7 @@ exports.refreshBuffer = function (size, callback) {
   // the same problem with >kMaxSingleBuffer requests.  But it
   // accesses the underlying buffer in the implementation, so we can't
   // just keep passing it views each time.
+  logMessage("crypt.refreshBuffer: Using core.crypto.");
   var buffers = [];
   getRandomByteChunks(callback, buffers, size, 0);
 };
@@ -75,7 +94,16 @@ exports.getRandomValues = function (buffer) {
   // It'd be preferable to just have a promise here, and call
   // refreshBuffer() again.
   if (offset + size > buf.length) {
-    throw new Error("Insufficient Randomness Allocated.");
+    var stack;
+    try {
+      throw new Error("catch me");
+      }
+    catch (e) {
+      stack = e.stack;
+    }
+    throw new Error("Insufficient Randomness Allocated: Wanted " + size + ", but only have " +
+        buf.length + " ever allocated, and already used " + offset + "\n: LOGS:\n" + getLogs() +
+        "\nSTACK: " + stack);
   }
 
   for (i = 0; i < size; i += 1) {
