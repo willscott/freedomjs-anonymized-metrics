@@ -8,6 +8,7 @@ var fcrypto = freedom['core.crypto']();
 // https://developer.mozilla.org/en-US/docs/Web/API/RandomSource/getRandomValues
 var kMaxSingleBuffer = 65536;
 
+
 function getRandomByteChunks(callback, buffers, size, index) {
   // last chunk.
   if ((index+1) * kMaxSingleBuffer > size) {
@@ -75,7 +76,15 @@ exports.getRandomValues = function (buffer) {
   // It'd be preferable to just have a promise here, and call
   // refreshBuffer() again.
   if (offset + size > buf.length) {
-    throw new Error("Insufficient Randomness Allocated.");
+    var stack;
+    try {
+      throw new Error("catch me");
+      }
+    catch (e) {
+      stack = e.stack;
+    }
+    throw new Error("Insufficient Randomness Allocated: Wanted " + size + ", but only have " +
+        buf.length + " ever allocated, and already used " + offset + "\nSTACK: " + stack);
   }
 
   for (i = 0; i < size; i += 1) {

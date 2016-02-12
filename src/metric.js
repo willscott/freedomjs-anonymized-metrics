@@ -25,9 +25,14 @@ var getRandomness = function (callback) {
         }
     }
   }
-  return new Promise(function (resolve) {
-    console.log('asking to reload to ', 8 * 8 * bloombits + num_definitions);
-    crypt.refreshBuffer(8 * 8 * bloombits + num_definitions, resolve);
+  var num_desired_rand_bytes = 8 * 8 * bloombits * num_definitions;
+  return new Promise(function (resolve, reject) {
+    crypt.refreshBuffer(num_desired_rand_bytes, function(code, err) {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(err);
+      }});
   });
 };
 
@@ -80,7 +85,7 @@ Metrics.prototype.report = function (metric, value) {
 };
 
 Metrics.prototype.retrieve = function () {
-  return getRandomness().then(this.actualRetrieve.bind(this), function(err) { console.log("Failed getRandomness: ", err); });
+  return getRandomness().then(this.actualRetrieve.bind(this));
 };
 
 Metrics.prototype.actualRetrieve = function () {
