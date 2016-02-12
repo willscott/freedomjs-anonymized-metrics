@@ -11,13 +11,13 @@ var logMessages = [];
 
 function logMessage(str) {
   logMessages.push(str);
-}
+};
 
 function getLogs() {
   var ret = '  ' + logMessages.join('\n  ');
   logMessages = [];
   return ret;
-}
+};
 
 
 function getRandomByteChunks(callback, buffers, size, index) {
@@ -46,7 +46,7 @@ function getRandomByteChunks(callback, buffers, size, index) {
       callback(-1, err);
     });
   }
-}
+};
 
 /**
  * refresh the internal crypto buffer to have {buffer} bytes of randomness.

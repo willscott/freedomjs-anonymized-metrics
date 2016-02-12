@@ -16,17 +16,17 @@ var logMessages = [];
 
 function clearLogs() {
   logMessages = [];
-}
+};
 
 function logMessage(str) {
   logMessages.push(str);
-}
+};
 
 function getLogs() {
   var ret = '  ' + logMessages.join('\n  ');
   clearLogs();
   return ret;
-}
+};
 
 var getRandomness = function (callback) {
   logMessage("getRandomness: Starting with: " + JSON.stringify(definitions));
